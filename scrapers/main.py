@@ -8,5 +8,4 @@ class Main:
         pass
     
     def main(self):
-        
-        
+        school_scraper=SchoolScraper()

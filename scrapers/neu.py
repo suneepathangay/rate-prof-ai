@@ -26,12 +26,13 @@ class SchoolScraper:
         
         
 
-    
+    #gets html
     def get_html(self):
         
         html=requests.get(self.url).text
         return html
-        
+    
+    #scrapes to find the name of all the profs at northeastern    
     def scrape_prof_names(self):
         
         html=self.get_html()
@@ -49,6 +50,7 @@ class SchoolScraper:
         return prof_names
     
     
+    #takes all the prof names and generates rate my prof search query
     def get_prof_page_links(self,prof_names):
         
         queries=[]
@@ -65,6 +67,7 @@ class SchoolScraper:
         return queries
                 
     
+    ##takes a url from list above and generates a rate my professor page link
     def scrape_prof_link(self,url):
         
         test="https://www.ratemyprofessors.com/search/professors/696?q=Hongyang%20Zhang"
@@ -110,7 +113,8 @@ class SchoolScraper:
                     raise ElementNotFound
         else:
             raise PageNotFound 
-            
+    
+    #takes rate my professor page links and then scrapes for the ratings        
     def scrape_prof_links(self,prof_page_links):
         
         prof_rate_links=[]
@@ -119,6 +123,7 @@ class SchoolScraper:
             try:
                 prof_href=self.scrape_prof_link(prof_link)
                 prof_rate_links.append(self.domain_name+prof_href)
+                
                 time.sleep(3) ##avoid spamming with requests
             
             except Exception as e:
