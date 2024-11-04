@@ -117,19 +117,17 @@ class SchoolScraper:
     #takes rate my professor page links and then scrapes for the ratings        
     def scrape_prof_links(self,prof_page_links):
         
-        prof_rate_links=[]
+        prof_ratemy_links=[]
         
         for prof_link in prof_page_links:
             try:
                 prof_href=self.scrape_prof_link(prof_link)
-                prof_rate_links.append(self.domain_name+prof_href)
-                
-                time.sleep(3) ##avoid spamming with requests
+                prof_ratemy_links.append(self.domain_name+prof_href)
             
             except Exception as e:
                 print(str(e))
         
-        return prof_rate_links
+        return prof_ratemy_links
     
     
     

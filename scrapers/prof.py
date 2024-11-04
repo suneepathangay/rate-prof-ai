@@ -5,16 +5,20 @@ from selenium.webdriver.support import expected_conditions as EC
 from pynput.keyboard import Key, Controller
 import requests
 from bs4 import BeautifulSoup
-import json
 from util import set_json
 
+##writer to write the response to a csv file to store
+class CSV_Writer:
+    
+    def __init__(self) -> None:
+        pass
 
 class ProfessorScraper:
     
-    def __init__(self) -> None:
+    def __init__(self,url) -> None:
         self.driver=webdriver.Chrome()
-        self.url="https://www.ratemyprofessors.com/professor/1769278"
-        self.list_tags=self.set_json("tags.json")
+        self.url=url
+        self.list_tags=set_json("tags.json")
         
         self.class_tags=set_json("classtags.json")["classes"]
         self.comment_tags=set_json("classtags.json")["comments"]
