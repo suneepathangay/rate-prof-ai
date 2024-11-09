@@ -1,8 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from pynput.keyboard import Key, Controller
+
 import requests
 from bs4 import BeautifulSoup
 from util import set_json
@@ -15,8 +11,7 @@ class CSV_Writer:
 
 class ProfessorScraper:
     
-    def __init__(self,url) -> None:
-        self.driver=webdriver.Chrome()
+    def __init__(self,url,neu_page_url) -> None:
         self.url=url
         self.list_tags=set_json("tags.json")
         
@@ -25,13 +20,19 @@ class ProfessorScraper:
         self.quality_tags=set_json("classtags.json")["quality"]
         self.diff_tags=set_json("classtags.json")["difficulty"]
         
+        self.neu_page_url=neu_page_url
+        
         
 
     
+    def get_prof_name(self):
+        name_portion=self.neu_page_url.split("q=")[1]
     
+        name=str(name_portion).split("%20")
     
-    
-    
+        return name[0],name[1]
+        
+        
     def scrape_iter(self):
         
         currNode=None
@@ -181,24 +182,24 @@ class ProfessorScraper:
     
     def scrape(self):
         currNode=self.scrape_iter()
-        classes=self.get_classes(currNode=currNode)
-        comments=self.get_comments(currNode=currNode)
-        quality=self.get_quality(currNode=currNode)
-        difficulty=self.get_difficulty(currNode=currNode)
-        
-        return {
-            "classes":list(classes),
-            "comments":comments,
-            "quality":quality,
-            "difficulty":difficulty
-        }
+        if currNode:
+            classes=self.get_classes(currNode=currNode)
+            comments=self.get_comments(currNode=currNode)
+            quality=self.get_quality(currNode=currNode)
+            difficulty=self.get_difficulty(currNode=currNode)
+            
+            first_name,last_name=self.get_prof_name()
+            
+            return {
+                "prof_name":f"{first_name} {last_name}",
+                "classes":list(classes),
+                "comments":comments,
+                "quality":quality,
+                "difficulty":difficulty
+            }
 
         
             
-scraper=ProfessorScraper()
-res=scraper.scrape()
-
-print(res)
 
 
 

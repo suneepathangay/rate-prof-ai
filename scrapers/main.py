@@ -18,3 +18,7 @@ class Main:
         
         for link in prof_ratemy_links:
             
+            prof_scraper=ProfessorScraper(link)
+        
+        
+            prof_scraper.scrape()
