@@ -1,11 +1,12 @@
 from neu import SchoolScraper
 from prof import ProfessorScraper
 import requests
+import json
 
 
 def main_test():
     school_scraper=SchoolScraper()
-    prof_names=school_scraper.scrape_prof_names()[3:6]
+    prof_names=school_scraper.scrape_prof_names()[:6]
     
     prof_neu_page_links=school_scraper.get_prof_page_links(prof_names=prof_names)
     
@@ -25,6 +26,9 @@ def main_test():
         review_data=prof_scraper.scrape()
         test_review_data.append(review_data)
     print(test_review_data)
+    
+    with open("data.json", "w") as file:
+        json.dump(test_review_data, file, indent=4) 
 
 main_test()
     
