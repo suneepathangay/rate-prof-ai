@@ -30,7 +30,8 @@ def main_test():
     with open("data.json", "w") as file:
         json.dump(test_review_data, file, indent=4) 
 
-main_test()
-    
+
+
+
     
     
