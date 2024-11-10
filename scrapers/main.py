@@ -1,16 +1,25 @@
 from neu import SchoolScraper
 from prof import ProfessorScraper
 import json
+import math
+import os
 
 
 def main_test():
+    BATCH_SIZE=10
+    
     school_scraper=SchoolScraper()
     prof_names=school_scraper.scrape_prof_names()
     
-    prof_neu_page_links=school_scraper.get_prof_page_links(prof_names=prof_names)[:2]
+    DATA_SIZE=len(prof_names)
+    
+    NUM_BATCHES=math.ceil(DATA_SIZE/BATCH_SIZE)
+    print(NUM_BATCHES)
+    
+    # prof_neu_page_links=school_scraper.get_prof_page_links(prof_names=prof_names)[:2]
 
-    ##this operation needs to be made multiprocessed
-    prof_ratemy_links=school_scraper.scrape_prof_links(prof_page_links=prof_neu_page_links)
+    # ##this operation needs to be made multiprocessed
+    # prof_ratemy_links=school_scraper.scrape_prof_links(prof_page_links=prof_neu_page_links)
     
 
     
@@ -32,4 +41,7 @@ def main_test():
     # with open("data.json", "w") as file:
     #     json.dump(test_review_data, file, indent=4) 
 
-main_test()
+
+
+# main_test()
+
