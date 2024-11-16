@@ -25,6 +25,8 @@ def main_test():
         except Exception as e:
             print(e)
             failed_keys.append(key)
+    
+    return failed_keys
             
             
 
