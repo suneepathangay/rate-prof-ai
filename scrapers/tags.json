@@ -28,7 +28,7 @@
         "type":"class",
         "name":"react-tabs__tab-panel react-tabs__tab-panel--selected"
 
-    },
+    }, 
     {
         "type":"id",
         "name":"ratingsList"
