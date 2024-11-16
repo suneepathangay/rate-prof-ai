@@ -20,7 +20,7 @@ def main_test():
     for key in batch_map:
         try:
             prof_names=batch_map[key]
-            process(prof_names=prof_names,key=key)
+            process(prof_names=prof_names,school_scraper=school_scraper,key=key)
             time.sleep(30)
         except Exception as e:
             print(e)
@@ -77,3 +77,6 @@ def write_data_json(test_review_data,key):
     ##cd to a direcotry called data and then begin writing the data to there
     with open(full_dest_path, "w") as file:
         json.dump(test_review_data, file, indent=4) 
+
+
+main_test()
