@@ -67,7 +67,7 @@ def process(prof_names:list,school_scraper:SchoolScraper,key):
 
 def write_data_json(test_review_data,key):
     
-    des_path='../jsondata'
+    des_path='../neujsondata'
     file_name=f"data{key}.json"
     
     full_dest_path=os.path.join(des_path,file_name)
