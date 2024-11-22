@@ -65,13 +65,13 @@ class Parser:
             
             if average_diff<=q25:
                     #add EASY
-                data[DifficultyLevel.TYPE]=DifficultyLevel.EASY
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.EASY
             elif average_diff<q75:
                     #add MEDIUM
-                data[DifficultyLevel.TYPE]=DifficultyLevel.MEDIUM
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.MEDIUM
             else:
                     #add HARD
-                data[DifficultyLevel.TYPE]=DifficultyLevel.HARD
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.HARD
             return data
         
     
@@ -91,11 +91,11 @@ class Parser:
         q25,q75=self.difficulty_thresholds[0],self.difficulty_thresholds[1]
         
         if avg_qul<=q25:
-            data[QualityLevel.TYPE]= QualityLevel.LOW
+            data[QualityLevel.TYPE.value]= QualityLevel.LOW
         elif avg_qul<q75:
-            data[QualityLevel.TYPE]=QualityLevel.DECENT
+            data[QualityLevel.TYPE.value]=QualityLevel.DECENT
         else:
-            data[QualityLevel.TYPE]=QualityLevel.GOOD
+            data[QualityLevel.TYPE.value]=QualityLevel.GOOD
     
         return data
     
