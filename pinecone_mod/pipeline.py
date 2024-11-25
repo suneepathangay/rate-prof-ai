@@ -1,7 +1,9 @@
 from pinecone_mod.embed import Embedder
 from pinecone_mod.dataparser import Parser
 import os
+import numpy as np
 ##runs the full pipeline of getting the json data adding the attribute and embedding it
+## the pipelin will then send these vectors to the pinecone instance
 
 class Pipeline:
     
@@ -42,9 +44,9 @@ class Pipeline:
         
         list_embeddings=[]
         
-        for file in list_files:
-            file_num=file.split("data")[1].split(".")[0]
+        file=list_files[23]
+        file_num=int(file.split("data")[1].split(".")[0])
             
-            list_embeddings.append(self.embedder.embed_json_file(file_num))
+        list_embeddings.append(self.embedder.embed_json_file(file_num))
         
-        return list_embeddings 
+        return np.array(list_embeddings)

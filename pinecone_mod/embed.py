@@ -21,23 +21,20 @@ class Embedder:
     def embed_json_file(self, json_file_num):
         """
         Load JSON file and embed all objects within it.
+        Returns list of embedding vectors, one for each object to preserve meaning.
         """
         data = self.parser.load_json(json_file_num)
         enhanced_data = self.parser.add_easiness_quality(data=data)
         
+        # Embed each object separately to preserve individual meanings
         embeddings = [self.embed_json_obj(obj) for obj in enhanced_data]
         return embeddings
     
     def embed_json_obj(self, json_obj):
         """
-        Create a combined embedding for all text fields in the JSON object.
-        
-        Strategy:
-        1. Concatenate all text values with their keys for context
-        2. Generate embedding using SentenceTransformer
-        3. Normalize the embedding for cosine similarity
+        Create an embedding vector for a single JSON object.
+        Preserves the semantic meaning of the object's content.
         """
-        # Combine all text fields with their keys for context
         text_parts = []
         
         for key in self.feature_names:
@@ -45,22 +42,13 @@ class Embedder:
                 # Include both key and value for context
                 text_parts.append(f"{key}: {str(json_obj[key])}")
         
-        # Combine all text parts with spaces
         combined_text = " ".join(text_parts)
         
-        # Generate embedding
         if combined_text.strip():
-            embedding = self.model.encode(combined_text)
-            # Normalize for cosine similarity
-            normalized_embedding = normalize(embedding.reshape(1, -1))
-            return normalized_embedding.flatten()
+            # Get embedding while preserving semantic meaning
+            embedding = self.model.encode(combined_text, convert_to_numpy=True)
+            # Normalize while keeping semantic relationships
+            normalized_embedding = embedding / np.linalg.norm(embedding)
+            return normalized_embedding
         else:
-            # Return zero vector if no text is present
             return np.zeros(self.model.get_sentence_embedding_dimension())
-        
-         
-         
-         
-        
-
-
