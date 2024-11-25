@@ -16,11 +16,33 @@ def connect_pinecone():
         index = pc.Index(name)
         return index
     except Exception as e:
-        print("pinecone connection failed")
+        print("pinecone connection failed {}",e)
+        return None
 
-def add_vector(index):
-    pass
+def add_vector(index,vectors):
+    try:
+        load_dotenv()
+        index.upsert(
+            vectors,
+            namespace= os.getenv("PINECONE_INDEX_NAME")
+        )
+    except Exception as e:
+        print("vector insert failed {}",e)
     
-connect_pinecone()
+def query_vector(index,query_vector):
+    try:
+        load_dotenv()
+        response = index.query(
+        namespace=os.getenv("PINECONE_INDEX_NAME"),
+        vector=query_vector,
+        top_k=3,
+        include_values=True,
+        include_metadata=True,
+        )
+        return response
+    except Exception as e:
+        print("vector query failed {}",e)
+        return None
+
 
     
