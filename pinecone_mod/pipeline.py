@@ -2,6 +2,7 @@ from pinecone_mod.embed import Embedder
 from pinecone_mod.dataparser import Parser
 import os
 import numpy as np
+from pinecone_mod.pineconecon import connect_pinecone,add_vector,query_vector
 ##runs the full pipeline of getting the json data adding the attribute and embedding it
 ## the pipelin will then send these vectors to the pinecone instance
 
@@ -42,11 +43,41 @@ class Pipeline:
         
         list_files=os.listdir(self.path)
         
-        list_embeddings=[]
         
-        file=list_files[23]
-        file_num=int(file.split("data")[1].split(".")[0])
+        pinecone_index=connect_pinecone()
+        
+        if not pinecone_index:
+            print("connection failed")
+            return
+        
+        for i in range(len(list_files[:1])):
             
-        list_embeddings.append(self.embedder.embed_json_file(file_num))
+            file=list_files[i]
+
+            file_num=int(file.split("data")[1].split(".")[0])
+            
+            vectors_file=self.embedder.embed_json_file(file_num)
+            
+            for j in range(len(vectors_file)):
+                
+                vector_arr=vectors_file[j].tolist()
+                vector_id=self.get_vector_ide(i,j)
+                vecotr_obj= self.convert_vecotr_obj(vector_arr=vector_arr,vector_id=vector_id)
+                add_vector(pinecone_index,vector_obj=vecotr_obj)
+            
+    
+    def convert_vecotr_obj(self,vector_arr,vector_id):
+        return [{
+            "id":vector_id,
+            "values":vector_arr,
+            "metadata":{}
+        }]
+    
+    def get_vector_ide(self,vector_file_num,vector_index):
+        return f"vector-{vector_file_num}-{vector_index}"
         
-        return np.array(list_embeddings)
+        
+        
+
+    
+        

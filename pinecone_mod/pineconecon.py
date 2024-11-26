@@ -19,11 +19,11 @@ def connect_pinecone():
         print("pinecone connection failed {}",e)
         return None
 
-def add_vector(index,vectors):
+def add_vector(index,vector_obj):
     try:
         load_dotenv()
         index.upsert(
-            vectors,
+            vectors=vector_obj,
             namespace= os.getenv("PINECONE_INDEX_NAME")
         )
     except Exception as e:

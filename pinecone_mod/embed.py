@@ -52,3 +52,6 @@ class Embedder:
             return normalized_embedding
         else:
             return np.zeros(self.model.get_sentence_embedding_dimension())
+    
+    def embed_query(self,query):
+        return self.model.encode(query,convert_to_numpy=True)

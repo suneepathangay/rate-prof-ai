@@ -36,9 +36,7 @@ def pipeline_test():
     pipeline=Pipeline(path="../neujsondata",num_dimensions=384)
     test_embedding=pipeline.transform_data()
     
-    for json_file in test_embedding:
-        for json_obj_vector in json_file:
-            print(json_obj_vector)
+    
             
 
 
