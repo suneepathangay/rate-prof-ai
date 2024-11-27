@@ -2,7 +2,7 @@ from pinecone_mod.embed import Embedder
 from pinecone_mod.dataparser import Parser
 import os
 import numpy as np
-from pinecone_mod.pineconecon import connect_pinecone,add_vector,query_vector
+from pinecone_mod.pineconeutil import connect_pinecone,add_vector,query_vector
 ##runs the full pipeline of getting the json data adding the attribute and embedding it
 ## the pipelin will then send these vectors to the pinecone instance
 
@@ -24,7 +24,8 @@ class Pipeline:
         for i in range(1,int(len(list_files)*sample_size)):
             
             json_objs=self.parser.load_json(i)
-            enhanced_data = self.parser.add_easiness_quality(data=json_objs)
+            filtered_json_objs=filter(self.is_not_null,json_objs)
+            enhanced_data = self.parser.add_easiness_quality(data=filtered_json_objs)
             for obj in enhanced_data:
                 list_objs.append(obj)
         
@@ -50,33 +51,44 @@ class Pipeline:
             print("connection failed")
             return
         
-        for i in range(len(list_files[:1])):
+        for i in range(len(list_files)):
             
             file=list_files[i]
 
             file_num=int(file.split("data")[1].split(".")[0])
+            print(file_num)
             
-            vectors_file=self.embedder.embed_json_file(file_num)
+            vectors_obj=self.embedder.embed_json_file(file_num)
+            vectors_file_arr=vectors_obj["embeddings"]
+            json_file_arr=vectors_obj["vector_objs"]
             
-            for j in range(len(vectors_file)):
+            
+            for j in range(len(vectors_file_arr)):
                 
-                vector_arr=vectors_file[j].tolist()
+                vector_arr=vectors_file_arr[j].tolist()
                 vector_id=self.get_vector_ide(i,j)
-                vecotr_obj= self.convert_vecotr_obj(vector_arr=vector_arr,vector_id=vector_id)
+                json_obj=json_file_arr[j]
+                print(json_obj['prof_name'])
+                
+                vecotr_obj= self.convert_vecotr_obj(vector_arr=vector_arr,vector_id=vector_id,json_obj=json_obj)
                 add_vector(pinecone_index,vector_obj=vecotr_obj)
+                print("vector being logged")
             
     
-    def convert_vecotr_obj(self,vector_arr,vector_id):
+    def convert_vecotr_obj(self,vector_arr,vector_id,json_obj):
         return [{
             "id":vector_id,
             "values":vector_arr,
-            "metadata":{}
+            "metadata":json_obj
         }]
     
     def get_vector_ide(self,vector_file_num,vector_index):
         return f"vector-{vector_file_num}-{vector_index}"
         
-        
+    def is_not_null(self,json_obj):
+        if json_obj:
+            return True
+        return False
         
 
     

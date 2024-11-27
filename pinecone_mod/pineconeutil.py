@@ -2,6 +2,7 @@
 from pinecone import Pinecone
 from dotenv import load_dotenv
 import os
+from sentence_transformers import SentenceTransformer, util
 
 
 
@@ -45,4 +46,5 @@ def query_vector(index,query_vector):
         return None
 
 
-    
+def get_model():
+    return SentenceTransformer('all-MiniLM-L6-v2')

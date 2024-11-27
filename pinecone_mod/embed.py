@@ -1,12 +1,13 @@
 from sentence_transformers import SentenceTransformer, util
 from pinecone_mod.dataparser import Parser
+from pinecone_mod.pineconeutil import get_model
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import normalize
 
 class Embedder:
     def __init__(self, path, num_dimensions) -> None:
-        self.model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.model = get_model()
         self.path = path
         self.parser = Parser(path=self.path)
         self.num_dimensions = num_dimensions
@@ -28,7 +29,7 @@ class Embedder:
         
         # Embed each object separately to preserve individual meanings
         embeddings = [self.embed_json_obj(obj) for obj in enhanced_data]
-        return embeddings
+        return {"embeddings":embeddings,"vector_objs":enhanced_data}
     
     def embed_json_obj(self, json_obj):
         """
@@ -55,3 +56,4 @@ class Embedder:
     
     def embed_query(self,query):
         return self.model.encode(query,convert_to_numpy=True)
+    

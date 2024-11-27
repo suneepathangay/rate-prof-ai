@@ -28,18 +28,23 @@ class Parser:
         if file_num<0 or file_num>len(files):
             raise IndexError
         
-        for filename in files:
+        for i in range(len(files)):
+            filename=files[i]
+            
             file_parts=filename.split("data")
             file_number=int(file_parts[1].split(".")[0])
             if file_number==file_num:
-                with open(self.path+"/"+files[0], "r") as file:
+                with open(self.path+"/"+files[i], "r") as file:
                     data = json.load(file) 
                     return data
     
     
     def add_easiness_quality(self,data):
         
-        easy_added= map(lambda d: self.add_easiness(d),data)
+        #filtering to check for none
+        filtered_data=filter(None,data)
+        
+        easy_added= map(lambda d: self.add_easiness(d),filtered_data)
         diff_added=map(lambda d: self.add_quality(d),easy_added)
         
         return list(diff_added)
@@ -55,7 +60,7 @@ class Parser:
                 sum_easiness.append(float(easy_score))
             
             if len(sum_easiness)==0:
-                data[DifficultyLevel.TYPE]=DifficultyLevel.UNKNOWN
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.UNKNOWN.value
                 return data
                 
             average_diff=sum(sum_easiness)/len(sum_easiness)
@@ -65,13 +70,13 @@ class Parser:
             
             if average_diff<=q25:
                     #add EASY
-                data[DifficultyLevel.TYPE.value]=DifficultyLevel.EASY
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.EASY.value
             elif average_diff<q75:
                     #add MEDIUM
-                data[DifficultyLevel.TYPE.value]=DifficultyLevel.MEDIUM
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.MEDIUM.value
             else:
                     #add HARD
-                data[DifficultyLevel.TYPE.value]=DifficultyLevel.HARD
+                data[DifficultyLevel.TYPE.value]=DifficultyLevel.HARD.value
             return data
         
     
@@ -83,7 +88,7 @@ class Parser:
             quality_scores.append(float(score))
         
         if len(quality_scores)==0:
-            data[QualityLevel.TYPE]=QualityLevel.UNKNOWN
+            data[QualityLevel.TYPE.value]=QualityLevel.UNKNOWN.value
             return data
         
         avg_qul=sum(quality_scores)/len(quality_scores)
@@ -91,14 +96,12 @@ class Parser:
         q25,q75=self.difficulty_thresholds[0],self.difficulty_thresholds[1]
         
         if avg_qul<=q25:
-            data[QualityLevel.TYPE.value]= QualityLevel.LOW
+            data[QualityLevel.TYPE.value]= QualityLevel.LOW.value
         elif avg_qul<q75:
-            data[QualityLevel.TYPE.value]=QualityLevel.DECENT
+            data[QualityLevel.TYPE.value]=QualityLevel.DECENT.value
         else:
-            data[QualityLevel.TYPE.value]=QualityLevel.GOOD
+            data[QualityLevel.TYPE.value]=QualityLevel.GOOD.value
     
         return data
     
     
-# parser=Parser(path="../neujsondata")
-# print(parser.load_json(1))

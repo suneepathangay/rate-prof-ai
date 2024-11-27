@@ -14,12 +14,13 @@ Once we embed each attirbute and add it to create one vector we can query using 
 
 TODO Currently:
 
-Write the data to Pinecone DB
 
 Write Classes/Functions to query our pinecone DB
 
 Select and config LLM to Use
 
 Create UI
+
+Structure Imports, theyre kinda weird and messed up
 
 
