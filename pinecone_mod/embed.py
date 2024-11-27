@@ -40,8 +40,12 @@ class Embedder:
         
         for key in self.feature_names:
             if key in json_obj and json_obj[key]:
-                # Include both key and value for context
-                text_parts.append(f"{key}: {str(json_obj[key])}")
+                
+                if key=='classes' or key=='comments':
+                    for string in json_obj[key]:
+                        text_parts.append(string)
+                else:
+                    text_parts.append(f"{str(json_obj[key])}")
         
         combined_text = " ".join(text_parts)
         

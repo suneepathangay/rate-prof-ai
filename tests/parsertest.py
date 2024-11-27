@@ -1,6 +1,7 @@
 
 import sys
 from pathlib import Path
+import os
 
 project_root = Path(__file__).resolve().parent.parent
 sys.path.append(str(project_root))
@@ -28,14 +29,16 @@ def embedder_test():
     
     embedder=Embedder(path=path,num_dimensions=384)
     
-    embedder.embed_json_file(1)
+    embedder.feature_names=['prof_name','classes','comments','difficulty','quality']
+    
+    embedding=embedder.embed_json_file(1)
+    
 
 
 def pipeline_test():
     
     pipeline=Pipeline(path="../neujsondata",num_dimensions=384)
-    test_embedding=pipeline.transform_data()
-    
+    pipeline.transform_data()
     
             
 

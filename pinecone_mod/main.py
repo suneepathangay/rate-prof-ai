@@ -8,7 +8,7 @@ from pinecone_mod.pipeline import Pipeline
 from pinecone_mod.dataparser import Parser
 
 def main():
-    pipeline=Pipeline(path="../neujsondata",num_dimensions=384)
+    pipeline=Pipeline(path="../neujsondata",num_dimensions=768)
     pipeline.transform_data()
     
 

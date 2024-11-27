@@ -14,6 +14,7 @@ Once we embed each attirbute and add it to create one vector we can query using 
 
 TODO Currently:
 
+Increase the embedding dimension or figure out a difference solution
 
 Write Classes/Functions to query our pinecone DB
 

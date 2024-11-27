@@ -47,4 +47,5 @@ def query_vector(index,query_vector):
 
 
 def get_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
+    load_dotenv()
+    return SentenceTransformer(os.getenv("MODEL_NAME"))

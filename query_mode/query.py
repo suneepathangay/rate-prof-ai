@@ -41,4 +41,4 @@ class Query:
     
 
 query=Query()
-query.query_pinecone("What teachers teach OOD?")
+query.query_pinecone("What classes does Gene Cooperman teach?")

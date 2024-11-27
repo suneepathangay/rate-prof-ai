@@ -56,7 +56,6 @@ class Pipeline:
             file=list_files[i]
 
             file_num=int(file.split("data")[1].split(".")[0])
-            print(file_num)
             
             vectors_obj=self.embedder.embed_json_file(file_num)
             vectors_file_arr=vectors_obj["embeddings"]
@@ -64,7 +63,6 @@ class Pipeline:
             
             
             for j in range(len(vectors_file_arr)):
-                
                 vector_arr=vectors_file_arr[j].tolist()
                 vector_id=self.get_vector_ide(i,j)
                 json_obj=json_file_arr[j]
