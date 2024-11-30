@@ -2,6 +2,7 @@ import os
 import json
 from pinecone_mod.datattributes import DataAttributes
 from pinecone_mod.macro import DifficultyLevel, QualityLevel
+from pinecone_mod.cleaner import AdvancedPreprocessor
 
 ##class to parse the json and convert our numericla data to categorical data for embedding
 
@@ -14,6 +15,8 @@ class Parser:
         
         self.difficulty_thresholds=self.attributes.get_difficulty_quality_thresholds()['difficulty']
         self.quality_thresholds=self.attributes.get_difficulty_quality_thresholds()['quality']
+        
+        self.cleaner=AdvancedPreprocessor()
         
     def list_json_files(self):
         
@@ -46,6 +49,8 @@ class Parser:
         
         easy_added= map(lambda d: self.add_easiness(d),filtered_data)
         diff_added=map(lambda d: self.add_quality(d),easy_added)
+        
+        #add clean data method here
         
         return list(diff_added)
                 
@@ -103,5 +108,38 @@ class Parser:
             data[QualityLevel.TYPE.value]=QualityLevel.GOOD.value
     
         return data
+
+    def get_sample(self):
+        
+        list_objs=[]
+        list_files=os.listdir(self.path)
+        sample_size=0.1
+        
+        for i in range(1,int(len(list_files)*sample_size)):
+            
+            json_objs=self.load_json(i)
+            filtered_json_objs=filter(self.is_not_null,json_objs)
+            enhanced_data = self.add_easiness_quality(data=filtered_json_objs)
+            for obj in enhanced_data:
+                list_objs.append(obj)
+        
+        return list_objs
+
+    def is_not_null(self,json_obj):
+        if json_obj:
+            return True
+        return False
+    
+    def clean_json_data(self,data):
+        ##we are only cleaning the text in comments
+        
+        comments=data['comments']
+        
+        for comment in comments:
+            pass
+            
+            
+            
+        
     
     

@@ -14,7 +14,9 @@ Once we embed each attirbute and add it to create one vector we can query using 
 
 TODO Currently:
 
-Increase the embedding dimension or figure out a difference solution
+Right now we are cleaning the data from the comments and then embedding it
+
+But another solution would be to leave the comments out of the vector and then include it in the meta data
 
 Write Classes/Functions to query our pinecone DB
 

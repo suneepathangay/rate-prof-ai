@@ -30,13 +30,14 @@ def add_vector(index,vector_obj):
     except Exception as e:
         print("vector insert failed {}",e)
     
-def query_vector(index,query_vector):
+def query_vector(index,dense_vector,sparse_vector):
     try:
         load_dotenv()
         response = index.query(
         namespace=os.getenv("PINECONE_INDEX_NAME"),
-        vector=query_vector,
-        top_k=3,
+        vector=dense_vector,
+        sparse_vector=sparse_vector,
+        top_k=5,
         include_values=True,
         include_metadata=True,
         )

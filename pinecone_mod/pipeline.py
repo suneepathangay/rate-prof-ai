@@ -1,4 +1,4 @@
-from pinecone_mod.embed import Embedder
+from pinecone_mod.embed import HybridEmbedder
 from pinecone_mod.dataparser import Parser
 import os
 import numpy as np
@@ -11,31 +11,12 @@ class Pipeline:
     def __init__(self,path,num_dimensions) -> None:
         
         self.path=path
-        self.embedder= Embedder(path,num_dimensions)
-        self.parser= Parser(path=self.path)
+        self.embedder= HybridEmbedder(path,num_dimensions)
+
     
-    
-    def get_sample(self):
-        
-        list_objs=[]
-        list_files=os.listdir(self.path)
-        sample_size=0.1
-        
-        for i in range(1,int(len(list_files)*sample_size)):
-            
-            json_objs=self.parser.load_json(i)
-            filtered_json_objs=filter(self.is_not_null,json_objs)
-            enhanced_data = self.parser.add_easiness_quality(data=filtered_json_objs)
-            for obj in enhanced_data:
-                list_objs.append(obj)
-        
-        return list_objs
     
     def fit_embedder(self):
-        
-        list_json_objs=self.get_sample()
-        
-        self.embedder.fit(list_json_objs)
+        self.embedder.fit()
             
         
     def transform_data(self):
@@ -57,36 +38,45 @@ class Pipeline:
 
             file_num=int(file.split("data")[1].split(".")[0])
             
-            vectors_obj=self.embedder.embed_json_file(file_num)
-            vectors_file_arr=vectors_obj["embeddings"]
-            json_file_arr=vectors_obj["vector_objs"]
+            embeddings_obj=self.embedder.embed_json_file(file_num)
+            
+            dense_embeddings=embeddings_obj["dense_embeddings"]
+            sparese_embeddings=embeddings_obj["sparse_embeddings"]
+            json_objs=embeddings_obj["vector_objs"]
             
             
-            for j in range(len(vectors_file_arr)):
-                vector_arr=vectors_file_arr[j].tolist()
+            
+            for j in range(len(json_objs)):
+                dense_vector=dense_embeddings[j].tolist()
+                sparese_vector=sparese_embeddings[j]
                 vector_id=self.get_vector_ide(i,j)
-                json_obj=json_file_arr[j]
+                json_obj=json_objs[j]
                 print(json_obj['prof_name'])
                 
-                vecotr_obj= self.convert_vecotr_obj(vector_arr=vector_arr,vector_id=vector_id,json_obj=json_obj)
+                vecotr_obj= self.convert_vector_obj(dense_vector=dense_vector,vector_id=vector_id,json_obj=json_obj,sparse_vector=sparese_vector)
                 add_vector(pinecone_index,vector_obj=vecotr_obj)
                 print("vector being logged")
             
     
-    def convert_vecotr_obj(self,vector_arr,vector_id,json_obj):
-        return [{
-            "id":vector_id,
-            "values":vector_arr,
-            "metadata":json_obj
-        }]
+    def convert_vector_obj(self,dense_vector,vector_id,json_obj,sparse_vector):
+        
+        return [
+            {
+                "id":vector_id,
+                "values":dense_vector,
+                "metadata":json_obj,
+                "sparse_values":{
+                    'indices':sparse_vector['indices'],
+                    'values':sparse_vector['values']
+                }
+            }
+        ]
+        
     
     def get_vector_ide(self,vector_file_num,vector_index):
         return f"vector-{vector_file_num}-{vector_index}"
         
-    def is_not_null(self,json_obj):
-        if json_obj:
-            return True
-        return False
+
         
 
     
