@@ -14,7 +14,12 @@ Once we embed each attirbute and add it to create one vector we can query using 
 
 TODO Currently:
 
-Increase the embedding dimension or figure out a difference solution
+Met with Mahith. Embeddings wont work. There is too much overlap ie similiartiy between the data.
+
+We can either go with function calling or we can go with a CustomGPT that incorporates our data into chatGPTs
+knowledge base. 
+
+I think for now I am going to create a customGPT
 
 Write Classes/Functions to query our pinecone DB
 
@@ -22,6 +27,6 @@ Select and config LLM to Use
 
 Create UI
 
-Structure Imports, theyre kinda weird and messed up
+
 
 

@@ -7,8 +7,8 @@ project_root = Path(__file__).resolve().parent.parent
 sys.path.append(str(project_root))
 
 from pinecone_mod.dataparser import Parser
-from pinecone_mod.embed import Embedder
 from pinecone_mod.pipeline import Pipeline
+from query_mod.query import Query
 
 
 
@@ -22,25 +22,12 @@ def load_json_test():
     print(mapped_data)
 
 
-
-def embedder_test():
-    
-    path="../neujsondata"
-    
-    embedder=Embedder(path=path,num_dimensions=384)
-    
-    embedder.feature_names=['prof_name','classes','comments','difficulty','quality']
-    
-    embedding=embedder.embed_json_file(1)
     
 
 
 def pipeline_test():
     
-    pipeline=Pipeline(path="../neujsondata",num_dimensions=384)
-    pipeline.transform_data()
+    pipeline=Pipeline(path="../neujsondata")
+    
     
             
-
-
-pipeline_test()

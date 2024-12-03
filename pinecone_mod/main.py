@@ -8,8 +8,9 @@ from pinecone_mod.pipeline import Pipeline
 from pinecone_mod.dataparser import Parser
 
 def main():
-    pipeline=Pipeline(path="../neujsondata",num_dimensions=768)
-    pipeline.transform_data()
+    pipeline=Pipeline(path="../neujsondata")
+    pipeline.set_table_up()
+    pipeline.write_json_to_sqlite()
     
 
 main()
