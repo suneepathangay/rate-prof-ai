@@ -12,8 +12,8 @@
 ##based on the key words we will construct a prompt and offer the LLM the names and descriptsions of these functions
 
 ##then the LLM will choose a function or multiple and it will execute it to get the JSON data
-
-##then that info will be passed back to the LLM to process
+ 
+##then that info will be passed back to the LLM to processs sds
 
 class FunctionCalling:
 
