@@ -17,7 +17,7 @@ def get_text():
         print(image_path)
         with Image.open(image_path) as img:
             text = pytesseract.image_to_string(img)
-    print(text)
+        print(text)
 
 get_text()
 
