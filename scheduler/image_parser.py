@@ -17,7 +17,7 @@ def get_text():
         with Image.open(image_path) as img:
             extracted_text = pytesseract.image_to_string(img)
             texts.append(extracted_text)
-            print(extracted_text)
+            #print(extracted_text)
     return "\n".join(texts)
 
 def get_semesters(text):
@@ -27,18 +27,19 @@ def get_semesters(text):
     semester_classes = {}
     previous_header_end = None
     current_semester = None
-    print(semester_headers)
+    #print(semester_headers)
     for header_match in semester_headers:
         if current_semester:
             classes_text = text[previous_header_end:header_match.start()].strip() #gets all the text between the last processed semester and the current semester
             semester_classes[current_semester] = classes_text
-        print(header_match)
+        #print(header_match)
+        
         current_semester = header_match.group(0) #gets the string for the matched semester so "Spring 2025 (17.0 hours)"
         previous_header_end = header_match.end() #If the match is "Spring 2025 (17.0 Hours)"" and it occurs at positions 0 to 24, then header_match.end() returns 25
 
-    if current_semester:
+    if current_semester: #if its the last semester on the page then just grab all the text under it
         semester_classes[current_semester] = text[previous_header_end:].strip()
-    print(semester_classes)
+    #print(semester_classes)
     return semester_classes
 
 def filter_relevant_classes(semesters):
@@ -49,12 +50,12 @@ def filter_relevant_classes(semesters):
             for course in courses.splitlines()
         ]
         relevant_classes[semester] = class_lines
-    print(relevant_classes)
     return relevant_classes
 
 if __name__ == "__main__":
     text = get_text()
     semesters = get_semesters(text=text)
-    filter_relevant_classes(semesters=semesters)
-
+    sem_class_dictionary = filter_relevant_classes(semesters=semesters)
+    for semester in sem_class_dictionary.keys():
+        print(semester + f" : {sem_class_dictionary[semester]}")
 
