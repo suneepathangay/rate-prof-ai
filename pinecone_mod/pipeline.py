@@ -5,7 +5,7 @@ import numpy as np
 import json
 import sqlite3
 from dotenv import load_dotenv
-from pinecone_mod.sqlscripts import create_table_script,insert_data_script
+from pinecone_mod.sqlscripts import create_table_script,insert_data_script,select_data
 
 
 ##Class that contains the methods to read the json data parse it and then write it to a sqlite3 database
@@ -33,12 +33,12 @@ class Pipeline:
     
     def set_table_up(self):
         try:
-            self.cursor.execute(create_table_script(table_name=os.getenv(self.table_name)))
+            self.cursor.execute(create_table_script(table_name=self.table_name))
         except:
             print("table creation failed")
     
     def get_file_num(self,file_name):
-        return file_name.split("data")[1]
+        return int(file_name.split("data")[1].split(".")[0])
     
     
     def write_json_data_sqlite(self,data):
@@ -49,19 +49,32 @@ class Pipeline:
             difficulty=data['difficulty']
             quality=data['quality']
             
-            insert_script=insert_data_script(table_name=self.table_name,
-                                             professor_name=prof_name,classes=classes,
-                                             comments=comments,difficulty=difficulty,quality=quality)
+            insert_script = insert_data_script(
+                table_name=self.table_name,
+                professor_name="professor_name",  # Ensure column names match the table structure
+                classes="classes",
+                comments="comments",
+                difficulty="difficulty",
+                quality="quality"
+            )
             
-            self.cursor.execute(insert_script)
+            self.cursor.execute(
+                insert_script,(prof_name, classes, comments, difficulty, quality)
+            )
+            self.connection.commit() 
+            print("insert successful")
         except:
             print("insert data failed")
             
     def write_json_to_sqlite(self):
         
-        for file_num in range(1,len(os.listdir(path=self.path))+1):
+        num_files=len(os.listdir(self.path))
+        
+        for file_num in range(1,num_files+1):
             json_data=self.unpack_json_from_file(file_num=file_num)
-            self.write_json_data_sqlite(data=json_data)
+            transfomed_data=self.parser.add_easiness_quality(data=json_data)
+            for data in transfomed_data:
+                self.write_json_data_sqlite(data=data)
             
             
 
@@ -83,10 +96,6 @@ class Pipeline:
             return data
             
     
-
-            
-  
-        
-
-    
-        
+    def check_data(self):
+        self.cursor.execute(select_data(self.table_name))
+        return self.cursor.fetchall()

@@ -13,9 +13,13 @@ def create_table_script(table_name):
                 quality TEXT
             )
         """
-def insert_data_script(table_name,professor_name,classes,comments,difficulty,quality):
-    
+def insert_data_script(table_name, professor_name, classes, comments, difficulty, quality):
     return f"""
-            INSERT INTO {table_name} (professor_name, classes, comments, difficulty, quality)
-            VALUES (?, ?, ?, ?, ?)
-        """, (professor_name, classes, comments, difficulty, quality)
+    INSERT INTO {table_name} (professor_name, classes, comments, difficulty, quality)
+    VALUES (?, ?, ?, ?, ?)
+    """
+
+def select_data(table_name):
+    return f"""
+            SELECT COUNT(*) FROM {table_name}
+        """

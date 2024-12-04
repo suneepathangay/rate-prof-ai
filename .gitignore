@@ -1,4 +1,6 @@
 venv/
 neujsondata/
 
+prof_reviews_ai
+
 .env
