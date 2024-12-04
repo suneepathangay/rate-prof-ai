@@ -12,9 +12,8 @@ from pinecone_mod.pipeline import Pipeline
 def main():
     
     load_dotenv()
-    pipeline=Pipeline(path="../neujsondata",table_name=os.getenv("NORTHEASTERN_TABLE"))
-    pipeline.set_table_up()
-    pipeline.write_json_to_sqlite()
+    pipeline=Pipeline(path="../neujsondata")
+    pipeline.write_json_supabase()
 
 
     

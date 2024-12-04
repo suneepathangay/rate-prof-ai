@@ -47,7 +47,10 @@ class Parser:
         easy_added= map(lambda d: self.add_easiness(d),filtered_data)
         diff_added=map(lambda d: self.add_quality(d),easy_added)
         
-        return list(diff_added)
+        classes_changed=map(lambda d:self.parse_classes(d),diff_added)
+        reviews_changed=map(lambda d:self.parse_reviews(d),classes_changed)
+        
+        return list(reviews_changed)
                 
         
     
@@ -104,4 +107,14 @@ class Parser:
     
         return data
     
+    def parse_classes(self,data):
+        string_classes = ', '.join(data['classes'])
+        data['classes']=string_classes
+        
+        return data
     
+    def parse_reviews(self,data):
+        string_comments = ' | '.join(data['comments'])
+        data['comments']=string_comments
+        
+        return data

@@ -5,7 +5,8 @@ import numpy as np
 import json
 import sqlite3
 from dotenv import load_dotenv
-from pinecone_mod.sqlscripts import create_table_script,insert_data_script,select_data
+from pinecone_mod.dbmanager import SupaBaseManager
+
 
 
 ##Class that contains the methods to read the json data parse it and then write it to a sqlite3 database
@@ -14,68 +15,30 @@ from pinecone_mod.sqlscripts import create_table_script,insert_data_script,selec
 
 class Pipeline:
     
-    def __init__(self,path,table_name) -> None:
-        
-        load_dotenv()
+    def __init__(self,path) -> None:
         
         self.path=path
         self.parser= Parser(path=self.path)
+        self.db_manager=SupaBaseManager(db_url=os.getenv("DATABASE_URL"),
+                                        db_key=os.getenv("DATABASE_KEY"),
+                                        table_name=os.getenv("NORTHEASTERN_TABLE"))
         
-        self.db_path=self.get_db_path()
-        
-        self.connection=sqlite3.connect(self.db_path)
-        self.cursor=self.connection.cursor()
-        self.table_name=table_name
     
-    def get_db_path(self):
-        general_path= os.path.abspath(os.path.join(os.getcwd(), '..'))
-        return os.path.join(general_path,os.getenv("DATABASE_NAME"))
-    
-    def set_table_up(self):
-        try:
-            self.cursor.execute(create_table_script(table_name=self.table_name))
-        except:
-            print("table creation failed")
-    
-    def get_file_num(self,file_name):
+    def get_file_num(self,file_name:str):
         return int(file_name.split("data")[1].split(".")[0])
     
     
-    def write_json_data_sqlite(self,data):
-        try:
-            prof_name=data['prof_name']
-            classes=', '.join(data['classes']) 
-            comments=' | '.join(data['comments'])
-            difficulty=data['difficulty']
-            quality=data['quality']
-            
-            insert_script = insert_data_script(
-                table_name=self.table_name,
-                professor_name="professor_name",  # Ensure column names match the table structure
-                classes="classes",
-                comments="comments",
-                difficulty="difficulty",
-                quality="quality"
-            )
-            
-            self.cursor.execute(
-                insert_script,(prof_name, classes, comments, difficulty, quality)
-            )
-            self.connection.commit() 
-            print("insert successful")
-        except:
-            print("insert data failed")
-            
-    def write_json_to_sqlite(self):
+    def write_json_supabase(self):
         
-        num_files=len(os.listdir(self.path))
+        num_files=len(os.listdir(self.path))  
         
         for file_num in range(1,num_files+1):
-            json_data=self.unpack_json_from_file(file_num=file_num)
-            transfomed_data=self.parser.add_easiness_quality(data=json_data)
-            for data in transfomed_data:
-                self.write_json_data_sqlite(data=data)
             
+            json_data=self.unpack_json_from_file(file_num=file_num)
+            enhanced_data=self.parser.add_easiness_quality(json_data)
+            for data in enhanced_data:
+                self.db_manager.insert_data(data=data)
+                
             
 
     def unpack_json_from_file(self,file_num):
@@ -96,6 +59,3 @@ class Pipeline:
             return data
             
     
-    def check_data(self):
-        self.cursor.execute(select_data(self.table_name))
-        return self.cursor.fetchall()
