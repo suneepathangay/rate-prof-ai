@@ -2,13 +2,16 @@
 import sys
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 project_root = Path(__file__).resolve().parent.parent
 sys.path.append(str(project_root))
 
-from pinecone_mod.dataparser import Parser
-from pinecone_mod.pipeline import Pipeline
+from database_mod.dataparser import Parser
+from database_mod.pipeline import Pipeline
 from query_mod.query import Query
+from database_mod.dbmanager import SupaBaseManager
+
 
 
 
@@ -22,12 +25,29 @@ def load_json_test():
     print(mapped_data)
 
 
-    
 
 
-def pipeline_test():
+def find_classes_test():
     
-    pipeline=Pipeline(path="../neujsondata")
+    load_dotenv()
+     
+    db_manager=SupaBaseManager(db_url=os.getenv("DATABASE_URL"),
+                                        db_key=os.getenv("DATABASE_KEY"),
+                                        table_name=os.getenv("NORTHEASTERN_TABLE"))
+     
+    data=db_manager.find_classes_for_professor(prof_name="Benjamin Lerner")
+    print(data)
+
+def find_prof_per_class():
+    load_dotenv()
+    db_manager=SupaBaseManager(db_url=os.getenv("DATABASE_URL"),
+                                        db_key=os.getenv("DATABASE_KEY"),
+                                        table_name=os.getenv("NORTHEASTERN_TABLE"))
+    
+    data=db_manager.find_professors_for_class(class_name="CS3500")
+    print(data)
     
     
+
+find_prof_per_class()
             

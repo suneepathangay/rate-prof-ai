@@ -6,7 +6,7 @@ from pathlib import Path
 project_root = Path(__file__).resolve().parent.parent
 sys.path.append(str(project_root))
 
-from pinecone_mod.dataparser import Parser
+from database_mod.dataparser import Parser
 from rapidfuzz import process
 from customgpt_client import CustomGPT
 

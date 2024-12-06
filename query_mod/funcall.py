@@ -15,6 +15,8 @@
  
 ##then that info will be passed back to the LLM to processs sds
 
+from supabase import Client
+
 class FunctionCalling:
 
     def __init__(self) -> None:
@@ -24,23 +26,23 @@ class FunctionCalling:
         #over here in this method we will match the query to the function using an llm
         pass
     
-    def find_classes_for_professor(self):
+    def find_classes_for_professor(self,prof_name):
         ##finds all the classes for that professor
         pass
     
-    def find_professor_info(self):
+    def find_professor_info(self,prof_name):
         ##finds the data associated with that professor
         pass
     
-    def find_quality_professors(self):
+    def find_quality_professors(self,prof_name):
         ##this method finds the quality professors at northeastern
         pass
     
-    def find_quality_professors_for_class(self):
+    def find_quality_professors_for_class(self,prof_name,class_name):
         ##finds the quality professors for a class
         pass
     
-    def find_difficulty_per_class(self):
+    def find_difficulty_per_class(self,class_name):
         ##find the difficulty for the class across professors that teach that class
         pass
     
