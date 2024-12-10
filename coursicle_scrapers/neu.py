@@ -166,4 +166,5 @@ s=CoursicleScraper()
 cats=s.get_class_categories()
 class_cat_map=s.get_classes_per_category(list_categories=cats)
 
+
 print(class_cat_map)
