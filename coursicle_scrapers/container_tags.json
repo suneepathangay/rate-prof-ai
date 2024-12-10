@@ -1,0 +1,30 @@
+[
+
+    {
+        "type":"class",
+        "name":"leftRailOpen"
+    },
+    {
+        "type":"id",
+        "name":"leftRail"
+    },
+    {
+        "type":"id",
+        "name":"addClassModal"
+    },
+    {
+        "type":"class",
+        "name":"modal-dialog"
+
+    },
+    {
+        "type":"class",
+        "name":"modal-content"
+    },
+    {
+        "type":"id",
+        "name": "classSearchResultsContainer"
+    }
+
+
+]
