@@ -1,8 +1,10 @@
 import requests
+import json
 
 
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-}
-response = requests.get("https://www.coursicle.com/neu/courses/", headers=headers)
-print(response.text)
+
+
+
+with open("neujsondata/AACE", "r") as file:
+        data = json.load(file)
+        print(data)

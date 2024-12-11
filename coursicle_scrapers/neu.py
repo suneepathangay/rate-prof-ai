@@ -3,8 +3,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-
+import json
 import time
+import os
 
 
 
@@ -14,12 +15,15 @@ import time
 
 class CoursicleScraper:
     
-    def __init__(self) -> None:
+    def __init__(self,path) -> None:
         
         chrome_options = Options()
         chrome_options.add_argument("--start-maximized")
         
         self.driver = webdriver.Chrome(options=chrome_options)
+        self.path=path
+        self.offset=self.load_offset()
+        self.cats=self.load_cats_from_txt()
 
     def get_class_categories(self):
         
@@ -32,22 +36,32 @@ class CoursicleScraper:
         
         return [course_cat.get_attribute('href') for course_cat in list_course_cats][:-1]
     
-    def get_classes_per_category(self,list_categories:str):
+    def get_classes_per_category(self):
+    
         
-        category_map={}
         
-        for i in range(0,2):
+        for i in range(self.offset,len(self.cats)):
             
-            link=list_categories[i]
+            link=self.cats[i]
             
             href_name=link.split("/")[-2]
             
-            class_map_info=self.get_classes(link=link)
-            category_map[href_name]=class_map_info
-            self.driver.back()
-            time.sleep(5)
-        
-        return category_map
+            try:
+                class_map_info=self.get_classes(link=link)
+                self.write_json(file_name=href_name,data=class_map_info)
+                self.offset += 1
+                self.write_offset()
+                self.driver.back()
+                time.sleep(5)
+            except Exception as e:
+                print("captcha caught me rip.")
+                print(e)
+                time.sleep(25)
+                ##setting the offset back to the value
+                self.write_offset()
+                break
+                
+           
             
     
     def get_classes(self,link):
@@ -62,14 +76,14 @@ class CoursicleScraper:
         
         for c in classes:
             href=c.get_attribute('href')
-            link=href
-            href_name=href.split("/")[-2]
-            
-            
-            class_info=self.get_class_info(link=link)
-            class_map[href_name]=class_info
-            self.driver.back()
-            time.sleep(5)
+            if href:
+                link=href
+                href_name=href.split("/")[-2]
+                
+                class_info=self.get_class_info(link=link)
+                class_map[href_name]=class_info
+                self.driver.back()
+                time.sleep(5)
         return class_map
             
             
@@ -144,27 +158,64 @@ class CoursicleScraper:
         
         except:
             return ""
+    
+    def write_json(self,file_name,data):
+        
+        with open(self.path+"/"+file_name,"w") as file:
+            json.dump([data],file,indent=4)
+        
 
-            
-                    
-         
+    def write_cats_to_txt(self,list_cats):
         
+        file_path = os.path.join(self.path, "categories.txt")
+    
+        # Write the list to the file
+        with open(file_path, "w") as file:
+            for category in list_cats:
+                file.write(f"{category}\n")
+    
+    def load_cats_from_txt(self):
+        # Define the file path
+        file_path = os.path.join(self.path, "categories.txt")
         
+        # Read the file and load the data into a list
+        with open(file_path, "r") as file:
+            list_cats = [line.strip() for line in file]  # Remove any trailing newline characters
+        return list_cats
+    
+    def load_offset(self):
+        ##load the number from txt
+        file_path = os.path.join(self.path, "offset.txt")
         
+        with open(file_path, "r") as file:
+            offset = int(file.read().strip())  # Read and strip any whitespace or newline
+            return offset
+    
+    def write_offset(self):
+        file_path = os.path.join(self.path, "offset.txt")
+        with open(file_path, "w") as file:
+            file.write(f"{self.offset}\n") 
         
-            
-        
-        
-        
-            
-            
+
+try: 
+  
+    s=CoursicleScraper(path="../neujsondata")
+    list_cats=s.load_cats_from_txt()
+    ##only run this once 
+    # cats=s.get_class_categories()
+    # s.write_cats_to_txt(list_cats=cats)
+    s.get_classes_per_category()
     
     
-
-
-s=CoursicleScraper()
-cats=s.get_class_categories()
-class_cat_map=s.get_classes_per_category(list_categories=cats)
-
-
-print(class_cat_map)
+    # print(s.offset) 
+    #print(list_cats)        
+except Exception as e:
+    print(e)
+        
+        
+        
+        
+    
+        
+        
+        
