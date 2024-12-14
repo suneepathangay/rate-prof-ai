@@ -6,6 +6,15 @@ from selenium.webdriver.chrome.options import Options
 import json
 import time
 import os
+import sys
+from pathlib import Path
+import traceback
+from dotenv import load_dotenv, set_key
+
+
+project_root = Path(__file__).resolve().parent.parent
+sys.path.append(str(project_root))
+from dbmanager.dbmanager import DBManager
 
 
 
@@ -15,15 +24,22 @@ import os
 
 class CoursicleScraper:
     
-    def __init__(self,path) -> None:
+    def __init__(self,school_name) -> None:
+        
+        load_dotenv('.env')
         
         chrome_options = Options()
         chrome_options.add_argument("--start-maximized")
         
         self.driver = webdriver.Chrome(options=chrome_options)
-        self.path=path
+        self.school_name=school_name
+        
+        self.env_key = f"{self.school_name}_OFFSET"
+        
+        self.cats=self.get_class_categories()
+        
         self.offset=self.load_offset()
-        self.cats=self.load_cats_from_txt()
+        self.db_manager=DBManager()
 
     def get_class_categories(self):
         
@@ -47,7 +63,8 @@ class CoursicleScraper:
             
             try:
                 class_map_info=self.get_classes(link=link)
-                self.write_json(file_name=href_name,data=class_map_info,class_id=None)
+                self.db_manager.write_json_data_to_data_obj(json_data=class_map_info,file_name=href_name)
+                print(class_map_info,href_name)
                 self.offset += 1
                 self.write_offset()
                 self.driver.back()
@@ -119,6 +136,7 @@ class CoursicleScraper:
             return []
 
         except:
+            traceback.print_exc()
             return []
     
     def get_class_timings(self):
@@ -138,6 +156,7 @@ class CoursicleScraper:
             
             return ""
         except:
+            traceback.print_exc()
             return ""
     
     def get_nu_path(self):
@@ -156,68 +175,36 @@ class CoursicleScraper:
             return ""
         
         except:
+            traceback.print_exc()
             return ""
 
-
-    def write_json(self, file_name, data,class_id):
-        
-        file_path = os.path.join(self.path, file_name)
-
-        if os.path.exists(file_path):
-            with open(file_path, "r") as file:
-                existing_data = json.load(file)
-        else:
-            existing_data = []
-        
-        existing_data[0][class_id]=data
-
-        with open(file_path, "w") as file:
-            json.dump(existing_data, file, indent=4)
-
-        
-
-    def write_cats_to_txt(self,list_cats):
-        
-        file_path = os.path.join(self.path, "categories.txt")
-    
-        # Write the list to the file
-        with open(file_path, "w") as file:
-            for category in list_cats:
-                file.write(f"{category}\n")
-    
-    def load_cats_from_txt(self):
-        # Define the file path
-        file_path = os.path.join(self.path, "categories.txt")
-        
-        # Read the file and load the data into a list
-        with open(file_path, "r") as file:
-            list_cats = [line.strip() for line in file]  # Remove any trailing newline characters
-        return list_cats
     
     def load_offset(self):
-        ##load the number from txt
-        file_path = os.path.join(self.path, "offset.txt")
-        
-        with open(file_path, "r") as file:
-            offset = int(file.read().strip())  # Read and strip any whitespace or newline
-            return offset
+        """Load offset value from environment variable."""
+        offset = os.getenv(self.env_key)
+        if offset is None:
+            self.write_offset(0)  # Initialize to 0 if not found
+            return 0
+        print(f"Loaded OFFSET: {offset}")  # Debugging line
+        return int(offset)
     
-    def write_offset(self):
-        file_path = os.path.join(self.path, "offset.txt")
-        with open(file_path, "w") as file:
-            file.write(f"{self.offset}\n") 
+    def write_offset(self, value=None):
+        """Update offset in environment and persist it to .env file."""
+        if value is not None:
+            self.offset = value  # Update the in-memory value of the offset
+        os.environ[self.env_key] = str(self.offset)  # Update in-memory environment variable
+        set_key(".env", self.env_key, str(self.offset))  # Persist the updated offset in the .env file
+        print(f"Updated OFFSET: {self.offset}")
     
     def fill_missing(self,missing_classes):
         try:
             for url in missing_classes:
-                file_name=self.path+"/"+url.split("/")[5]
-                
-                class_id=url.split("/")[6]
-                
+                file_name=url.split("/")[5]
                 json_data=self.get_class_info(url)
-                self.write_json(file_name=file_name,data=json_data,class_id=class_id)
+                self.db_manager.write_json_data_to_data_obj(json_data=json_data,file_name=file_name)
                 time.sleep(5)
         except Exception as e:
+            traceback.print_exc()
             print(e)
     
     
@@ -227,14 +214,13 @@ class CoursicleScraper:
         file_name=category_url.split("/")[5]
         
         class_map_info=self.get_classes(link=category_url)
-        self.write_json(file_name=file_name,data=class_map_info)
+        
+        self.db_manager.write_json_data_to_data_obj(json_data=class_map_info,file_name=file_name)
         
         
         
         
-        
-        
-        
+
 
 
         

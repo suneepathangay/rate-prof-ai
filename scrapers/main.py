@@ -2,28 +2,25 @@
 import sys
 from pathlib import Path
 
-
+from dotenv import load_dotenv
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-
-from coursicle_scrapers.coursicle import CoursicleScraper
-from coursicle_scrapers.validate_scraper import Validator
+import traceback
+from scrapers.coursicle import CoursicleScraper
+from scrapers.validate_scraper import Validator
 
 
 
 def run_main():
     try: 
-    
-        s=CoursicleScraper(path="../neujsondata")
-        list_cats=s.load_cats_from_txt()
-        ##only run this once 
-        # cats=s.get_class_categories()
-        # s.write_cats_to_txt(list_cats=cats)
+        
+        load_dotenv(dotenv_path="../.env")
+        s=CoursicleScraper(school_name="NEU")
+        
+ 
         s.get_classes_per_category()
-        
-        
-        # print(s.offset) 
-        #print(list_cats)        
+             
     except Exception as e:
+        traceback.print_exc()
         print(e)
 
 
@@ -44,5 +41,4 @@ def cleanup():
     s=CoursicleScraper(path="../neujsondata")
     s.write_custom_link(category_url="https://www.coursicle.com/neu/courses/CS/")
     
-
-run_validate()
+run_main()

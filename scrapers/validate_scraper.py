@@ -1,11 +1,19 @@
 
 import os
 import json
+import sys
+from pathlib import Path
+
+
+project_root = Path(__file__).resolve().parent.parent
+sys.path.append(str(project_root))
+from dbmanager.dbmanager import DBManager
 
 class Validator:
     
-    def __init__(self,path) -> None:
-        self.path=path
+    def __init__(self) -> None:
+        
+        self.db_manager=DBManager()
     
     
     def validate(self):
