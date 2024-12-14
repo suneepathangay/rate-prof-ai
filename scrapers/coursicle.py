@@ -37,7 +37,6 @@ class CoursicleScraper:
         return [course_cat.get_attribute('href') for course_cat in list_course_cats][:-1]
     
     def get_classes_per_category(self):
-    
         
         
         for i in range(self.offset,len(self.cats)):
@@ -48,7 +47,7 @@ class CoursicleScraper:
             
             try:
                 class_map_info=self.get_classes(link=link)
-                self.write_json(file_name=href_name,data=class_map_info)
+                self.write_json(file_name=href_name,data=class_map_info,class_id=None)
                 self.offset += 1
                 self.write_offset()
                 self.driver.back()
@@ -158,11 +157,23 @@ class CoursicleScraper:
         
         except:
             return ""
-    
-    def write_json(self,file_name,data):
+
+
+    def write_json(self, file_name, data,class_id):
         
-        with open(self.path+"/"+file_name,"w") as file:
-            json.dump([data],file,indent=4)
+        file_path = os.path.join(self.path, file_name)
+
+        if os.path.exists(file_path):
+            with open(file_path, "r") as file:
+                existing_data = json.load(file)
+        else:
+            existing_data = []
+        
+        existing_data[0][class_id]=data
+
+        with open(file_path, "w") as file:
+            json.dump(existing_data, file, indent=4)
+
         
 
     def write_cats_to_txt(self,list_cats):
@@ -195,22 +206,37 @@ class CoursicleScraper:
         file_path = os.path.join(self.path, "offset.txt")
         with open(file_path, "w") as file:
             file.write(f"{self.offset}\n") 
+    
+    def fill_missing(self,missing_classes):
+        try:
+            for url in missing_classes:
+                file_name=self.path+"/"+url.split("/")[5]
+                
+                class_id=url.split("/")[6]
+                
+                json_data=self.get_class_info(url)
+                self.write_json(file_name=file_name,data=json_data,class_id=class_id)
+                time.sleep(5)
+        except Exception as e:
+            print(e)
+    
+    
+    ##backup method for when I fuck up and rewrite data by accident
+    def write_custom_link(self,category_url):
+        
+        file_name=category_url.split("/")[5]
+        
+        class_map_info=self.get_classes(link=category_url)
+        self.write_json(file_name=file_name,data=class_map_info)
+        
+        
+        
+        
+        
+        
         
 
-try: 
-  
-    s=CoursicleScraper(path="../neujsondata")
-    list_cats=s.load_cats_from_txt()
-    ##only run this once 
-    # cats=s.get_class_categories()
-    # s.write_cats_to_txt(list_cats=cats)
-    s.get_classes_per_category()
-    
-    
-    # print(s.offset) 
-    #print(list_cats)        
-except Exception as e:
-    print(e)
+
         
         
         
