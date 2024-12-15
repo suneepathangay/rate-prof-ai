@@ -36,12 +36,11 @@ class CoursicleScraper:
         
         self.env_key = f"{self.school_name}_OFFSET"
         
-        self.cats=self.get_class_categories()
         
         self.offset=self.load_offset()
         self.db_manager=DBManager()
 
-    def get_class_categories(self):
+    def init_class_categories(self):
         
         self.driver.get("https://www.coursicle.com/neu/courses/")
         time.sleep(5)
@@ -50,7 +49,7 @@ class CoursicleScraper:
         
         list_course_cats=container_node.find_elements(by=By.CLASS_NAME, value="tileElement")
         
-        return [course_cat.get_attribute('href') for course_cat in list_course_cats][:-1]
+        self.cats=[course_cat.get_attribute('href') for course_cat in list_course_cats][:-1]
     
     def get_classes_per_category(self):
         
