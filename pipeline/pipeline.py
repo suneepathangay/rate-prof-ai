@@ -75,8 +75,7 @@ class Pipeline:
         
 
 p=Pipeline()
-# p.run()
+p.run()
 
-p.populate_prof_data()
         
         

@@ -52,6 +52,9 @@ class RateMyProfScraper:
         
         prof_search_url=self.create_prof_search_url(prof_name=prof_name)
         
+        if not prof_search_url:
+            return None
+        
         neu_prof_url=self.get_prof_url(prof_search_url=prof_search_url,school_name=school_name,prof_name=prof_name)
         
         if neu_prof_url:
@@ -71,13 +74,17 @@ class RateMyProfScraper:
                 
         
     def create_prof_search_url(self,prof_name):
-        
-        first_name=prof_name.split(" ")[0]
-        last_name=prof_name.split(" ")[1]
-  
-        url=f"https://www.ratemyprofessors.com/search/professors?q={first_name}%20{last_name}"
-        
-        return url
+ 
+        try:
+            first_name=prof_name.split(" ")[0]
+            last_name=prof_name.split(" ")[1]
+    
+            url=f"https://www.ratemyprofessors.com/search/professors?q={first_name}%20{last_name}"
+            
+            return url
+        except Exception as e:
+            print(prof_name)
+            print(e)
 
     def get_prof_url(self, prof_search_url,school_name,prof_name):
         
