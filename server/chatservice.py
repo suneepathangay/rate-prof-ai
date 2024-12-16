@@ -98,6 +98,7 @@ class ChatService:
                     for msg in message_history.messages
                 ]
             }
+            
         
         except Exception as e:
             return {"error": f"internal server error due {e}"}   
