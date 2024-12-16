@@ -3,7 +3,7 @@
 
 import sys
 from pathlib import Path
-
+import time
 from dotenv import load_dotenv
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from scrapers.coursicle import CoursicleScraper
@@ -30,6 +30,7 @@ class Pipeline:
         self.populate_class_data()
         
         ##writes all the class data to the class database
+        self.populate_prof_data()
         
         
     
@@ -48,15 +49,23 @@ class Pipeline:
     
     
     
-    def populate_prof_data(self,prof_names):
+    def populate_prof_data(self):
         
+        prof_names=self.get_prof_names()
         
-        for i in range(1):
+        for i in range(len(prof_names)):
             
-            prof_name="Benjamin Lerner"
+            prof_name=prof_names[i]
             comments=self.rate_prof.scrape(prof_name=prof_name,school_name="Northeastern University")
-            print(prof_name,comments)
-        
+            
+            comments_str=""
+            if comments:
+                comments_str=" ".join(comments)
+                
+            prof_data={"prof_name":prof_name,"reviews": comments_str}
+            self.db_manager.write_prof_data(data=prof_data)
+            
+            time.sleep(5)
         
         
         
@@ -67,7 +76,7 @@ class Pipeline:
 
 p=Pipeline()
 # p.run()
-list_profs=p.get_prof_names()
-p.populate_prof_data(prof_names=list_profs)
+
+p.populate_prof_data()
         
         

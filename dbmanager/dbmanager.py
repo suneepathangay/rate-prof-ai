@@ -1,8 +1,6 @@
 
 import os
-import json
 from supabase import Client
-import json
 import traceback
 
 
@@ -43,6 +41,14 @@ class DBManager:
             print(e)
             traceback.print_exc()
             
+    
+    def write_prof_data(self,data):
+        
+        try:
+            self.client.table(os.getenv("NORTHEASTERN_PROF_TABLE")).insert([data]).execute()
+        
+        except Exception as e:
+            print(e)
         
       
  
