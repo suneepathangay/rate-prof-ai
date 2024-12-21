@@ -101,5 +101,7 @@ class ChatService:
             
         
         except Exception as e:
-            return {"error": f"internal server error due {e}"}   
+            return {"error": f"internal server error due {e}"} 
+        
+
 

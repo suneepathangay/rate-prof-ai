@@ -33,16 +33,11 @@ def extract_query_terms(query_string):
 
         Below is a real user query. Craft an answer based on the requirements and return a response.
 
-        User query: "{input}"
+        User query: "{input}""
 
-        Response:
-        """
-    return template
-
-
-def decides_function(input,query):
+def function_calling_prompt(input,query):
     
-        template = """
+        template = f"""
         You are an assisstant who is given a list of possible functions and you are responsible for deciding which function is best suited to retrieve information based on a user given query. 
         Additionally two parameters will be given to you, course_name and professor_name, you may use these when deciding which function is most appropriate and you may use a combination of them. Use them accordingly. Below are the functions and their documentation/description.
         If you feel that the user query cannot be answered via this functions, craft an apology detailing why you were unable to make a decision.
@@ -57,6 +52,6 @@ def decides_function(input,query):
         """
         return template
 
-def craft_response(input):
+def craft_response_prompt(input):
     pass
     
