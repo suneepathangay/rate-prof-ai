@@ -4,3 +4,5 @@
 neujsondata/
 
 catoffset/
+
+__pycache__/
