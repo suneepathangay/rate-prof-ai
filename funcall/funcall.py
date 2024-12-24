@@ -22,14 +22,31 @@ class FuncCall:
         self.llm=self.setup_openai()
         
     
-    def get_data(self,query):
-        pass
+    def match_query_function(self,query,keywords_obj):
+        
+        
+        
+        prompt=PromptTemplate(
+            input_variables=["input","query"],
+            template=function_calling_prompt(query="",input="")
+            
+        )
+        
+        chain = prompt | self.llm
+        
+        try:
+            response=chain.invoke({"input":keywords_obj,"query":query})
+            
+            json_data=json.load(response.content)
+            
+            return json_data
+        
+        except Exception as e:
+            print(e)
+        
     
     
     def extract_key_words_query(self,query):
-        
-    
-        
         
         prompt = PromptTemplate(
             input_variables=["query_string"],
@@ -52,10 +69,16 @@ class FuncCall:
             return {"professor": "", "course": ""}
     
     def get_class_data(self,class_name):
-        pass
+       
+       return self.db_manager.get_classes_data(class_name=class_name)
     
-    def get_prof_data(self,prof_name):
-        pass
+    def get_prof_reviews(self,prof_name):
+        
+        return self.db_manager.get_prof_data(prof_name=prof_name)
+    
+    def get_classes_for_prof(self,prof_name):
+        
+        return self.db_manager.get_classes_prof(prof_name=prof_name)
     
     def pass_data_to_model(self,data):
         pass

@@ -82,6 +82,10 @@ class ChatService:
         message=request['message']
         session_id=request['session_id']
         
+        keywords=self.func_call.extract_key_words_query(query=message)
+        raw_json_data=self.func_call.match_query_function(query=message,keywords_obj=keywords)
+        
+        
         conversation=self.get_conversation(request=request)
         message_history=self.get_message_history(session_id=session_id)
         
