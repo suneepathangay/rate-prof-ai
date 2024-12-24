@@ -27,7 +27,7 @@ class Pipeline:
     
     def run(self):
         
-       # self.populate_class_data()
+        self.populate_class_data()
         
         ##writes all the class data to the class database
         self.populate_prof_data()

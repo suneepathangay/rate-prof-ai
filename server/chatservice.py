@@ -85,6 +85,8 @@ class ChatService:
         keywords=self.func_call.extract_key_words_query(query=message)
         raw_json_data=self.func_call.match_query_function(query=message,keywords_obj=keywords)
         
+        ##give the data and the data cleaning prompt so it be put into 
+        #response = conversation.predict(input=message)
         
         conversation=self.get_conversation(request=request)
         message_history=self.get_message_history(session_id=session_id)
