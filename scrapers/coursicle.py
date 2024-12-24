@@ -18,10 +18,6 @@ from dbmanager.dbmanager import DBManager
 
 
 
-
-
-
-
 class CoursicleScraper:
     
     def __init__(self,school_name) -> None:
