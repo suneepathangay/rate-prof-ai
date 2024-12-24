@@ -74,11 +74,12 @@ class FuncCall:
        
        return self.db_manager.get_classes_data(class_name=class_name)
     
-    ##gets the reviews from the reviews table
+    ##gets the reviews from the reviews table for a certain professor
     def get_prof_reviews(self,prof_name):
         
         return self.db_manager.get_prof_data(prof_name=prof_name)
     
+    ##gets all the classes associated for that professor
     def get_classes_for_prof(self,prof_name):
         
         return self.db_manager.get_classes_prof(prof_name=prof_name)
@@ -100,3 +101,14 @@ class FuncCall:
         if 'query' not in query_json:
             return False
         return True
+    
+    
+##possible user queries
+
+#Which classes does Ben Lerner teach?
+#Does Ben Lerner teach CS3500?
+#What are the reivews for Gene Cooperman? 
+#What are the timings for CS3000?
+#Who is the best professor for DS4400?
+#What are the timings for ENGL1450?
+#What NUPath requirements does GEO4300 satisfy?

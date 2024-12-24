@@ -207,7 +207,6 @@ class CoursicleScraper:
             print(e)
     
     
-    ##backup method for when I fuck up and rewrite data by accident
     def write_custom_link(self,category_url):
         
         file_name=category_url.split("/")[5]

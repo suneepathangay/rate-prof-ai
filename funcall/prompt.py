@@ -36,4 +36,10 @@ def extract_query_terms_prompt(query_string):
 
 
 def function_calling_prompt(keywords,user_query):
-    pass
+    template = f"""
+        You are an assistant that is responsible for when given a user query and keywords extracted from that user query, to determine 
+        which functions to call along with which parameters along:
+
+        User query: "{user_query} Keywords:{keywords}"
+    """
+    return template
