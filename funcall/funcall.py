@@ -9,7 +9,7 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 import os
 import json
-from prompt import extract_query_terms_prompt, function_calling_prompt, craft_response_prompt
+from prompt import extract_query_terms_prompt, function_calling_prompt
 
 
 class FuncCall:
@@ -68,10 +68,13 @@ class FuncCall:
             print(f"Error extracting terms: {e}")
             return {"professor": "", "course": ""}
     
+    
+    ##gets all the data associated for a certain class
     def get_class_data(self,class_name):
        
        return self.db_manager.get_classes_data(class_name=class_name)
     
+    ##gets the reviews from the reviews table
     def get_prof_reviews(self,prof_name):
         
         return self.db_manager.get_prof_data(prof_name=prof_name)
