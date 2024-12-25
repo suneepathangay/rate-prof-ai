@@ -6,11 +6,12 @@ import os
 from langchain.memory import RedisChatMessageHistory, ChatMessageHistory
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationChain
-
+import json
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from funcall.funcall import FuncCall
+from funcall.prompt import clean_data_prompt
 
 
 class ChatService:
@@ -85,14 +86,18 @@ class ChatService:
         keywords=self.func_call.extract_key_words_query(query=message)
         raw_json_data=self.func_call.match_query_function(query=message,keywords_obj=keywords)
         
-        ##give the data and the data cleaning prompt so it be put into 
-        #response = conversation.predict(input=message)
+        raw_json_data_string=json.dumps(raw_json_data)
+        
+        print(keywords)
+        print(raw_json_data_string)
+        
+        prompt=clean_data_prompt(query=message,json_data=raw_json_data_string)
         
         conversation=self.get_conversation(request=request)
         message_history=self.get_message_history(session_id=session_id)
         
         try:
-            response = conversation.predict(input=message)
+            response = conversation.predict(input=prompt)
             message_history.add_user_message(message)
             message_history.add_ai_message(response)
             

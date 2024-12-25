@@ -8,7 +8,7 @@ import json
 import traceback
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from prompt import extract_query_terms_prompt, function_calling_prompt
+from .prompt import extract_query_terms_prompt, function_calling_prompt
 
 class FuncCall:
     def __init__(self) -> None:
@@ -102,18 +102,44 @@ class FuncCall:
         ]
         
         return mapped_data
-                
     
-
+    
+    def get_llm(self):
+        return self.llm
+    
+    # def clean_response_llm(self,raw_json_data,user_query):
+        
+    #     raw_json_data_string=json.dumps(raw_json_data)
+        
+    #     prompt = PromptTemplate(
+    #         input_variables=["query", "json_data"],
+    #         template=clean_data_prompt()
+    #     )
+        
+    #     chain = prompt | self.llm
+        
+    #     try:
+    #         response=chain.invoke({
+    #            "query" :user_query,
+    #            "json_data": raw_json_data_string
+    #         })
+            
+    #         response_json_data=json.loads(response.content)
+            
+    #         return response_json_data
+        
+    #     except Exception as e:
+    #         print(e)
+        
             
     
-f=FuncCall()
-query_string="what does that mf Gene Cooperman teach?"
-keywords=f.extract_key_words_query(query=query_string)
+# f=FuncCall()
+# query_string="what does that mf Gene Cooperman teach?"
+# keywords=f.extract_key_words_query(query=query_string)
 
-raw_json=f.match_query_function(query=query_string,keywords_obj=keywords)
-print(raw_json)
-
+# raw_json=f.match_query_function(query=query_string,keywords_obj=keywords)
+# response_obj=f.clean_response_llm(raw_json_data=raw_json,user_query=query_string)
+# print(response_obj)
 
 #Which classes does Ben Lerner teach?
 #Does Ben Lerner teach CS3500?

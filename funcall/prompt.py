@@ -91,3 +91,22 @@ def function_calling_prompt():
         User query: {user_query} 
         Keywords: {keywords}
     """
+
+def clean_data_prompt(query,json_data):
+    
+    return f"""
+    
+    You are assistant who is only responsible for answering questions on class/professor info at a university. 
+    Currently you only support Northeastern University. If you are presented with a question that is not related to
+    the above information, craft a response explaining why you cannot answer it.
+    
+    who is given a user query and some data that was extracted based on the user's query.
+    You will take that query and data and formulate a response that best answers the user's question with the data
+    that you are given. If you feel that the data is insufficient or not related to the users query craft a response
+    explaining why you cannnt answer the question.
+    
+    
+    User Query:{query}
+    
+    Relevant Data:{json_data}
+    """
