@@ -14,6 +14,7 @@ class RateMyProfScraper:
         
         review_tags=self.get_review_tags(prof_name=prof_name,school_name=school_name)
         
+        
         if review_tags:
         
             comments=map(self.extract_comments_from_tag,review_tags)
@@ -52,11 +53,12 @@ class RateMyProfScraper:
         
         prof_search_url=self.create_prof_search_url(prof_name=prof_name)
         
+        
         if not prof_search_url:
             return None
         
         neu_prof_url=self.get_prof_url(prof_search_url=prof_search_url,school_name=school_name,prof_name=prof_name)
-        
+        print(neu_prof_url)
         if neu_prof_url:
             response= requests.get(url=neu_prof_url)
         
@@ -102,10 +104,16 @@ class RateMyProfScraper:
             
             a_tags = soup.find_all('a')
             
-            if len(a_tags)>=1:
-                prof_href=a_tags[1].get('href')
-                full_url = urljoin(prof_search_url, prof_href)
-                return full_url
+            for tag in a_tags:
+                
+                div_tags=tag.find_all("div")
+                for div_tag in div_tags:
+                    class_names=div_tag.get("class")
+                    for class_name in class_names:
+                        if class_name.split("-")[0]=="CardSchool__School":
+                            if div_tag.text==school_name:
+                                return "https://www.ratemyprofessors.com"+tag.get('href')
+                
             
         return None
     
@@ -156,4 +164,5 @@ class RateMyProfScraper:
         
         
     
-        
+
+

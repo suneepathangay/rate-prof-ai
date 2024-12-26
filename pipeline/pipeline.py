@@ -4,6 +4,7 @@
 import sys
 from pathlib import Path
 import time
+import traceback
 from dotenv import load_dotenv
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from scrapers.coursicle import CoursicleScraper
@@ -27,7 +28,7 @@ class Pipeline:
     
     def run(self):
         
-        self.populate_class_data()
+       # self.populate_class_data()
         
         ##writes all the class data to the class database
         self.populate_prof_data()
@@ -37,8 +38,9 @@ class Pipeline:
     def get_prof_names(self):
         
         list_profs=[]
-        
+       
         list_prof_objs=self.db_manager.get_all_profs()
+       
 
         
         for prof_obj in list_prof_objs:
@@ -51,22 +53,31 @@ class Pipeline:
     
     def populate_prof_data(self):
         
-        prof_names=self.get_prof_names()
+        prof_names=list(set(self.get_prof_names()))
+        print(len(prof_names))
         
         for i in range(len(prof_names)):
-            
-            prof_name=prof_names[i]
-            comments=self.rate_prof.scrape(prof_name=prof_name,school_name="Northeastern University")
-            
-            comments_str=""
-            if comments:
-                comments_str=" ".join(comments)
+            try:
+                prof_name=prof_names[i]
+                comments=self.rate_prof.scrape(prof_name=prof_name,school_name="Northeastern University")
                 
-            prof_data={"prof_name":prof_name,"reviews": comments_str}
-            self.db_manager.write_prof_data(data=prof_data)
-            
-            time.sleep(5)
-        
+                comments_str=""
+                if comments:
+                    comments_str=" ".join(comments)
+                
+                if comments_str=="":
+                    with open("missing.txt", "a") as file:
+                        file.write(prof_name+"\n")
+                        
+                    
+                prof_data={"prof_name":prof_name,"reviews": comments_str}
+                print(prof_name+" "+comments_str)
+                self.db_manager.write_prof_data(data=prof_data)
+                
+                time.sleep(5)
+            except Exception as e:
+                print(e)
+                traceback.print_exc()
         
         
         
@@ -74,8 +85,10 @@ class Pipeline:
         
         
 
-p=Pipeline()
-p.run()
+if __name__=="__main__":      
+
+    p=Pipeline()
+    p.run()
 
         
         

@@ -5,7 +5,7 @@ def extract_query_terms_prompt():
         You are an assistant that extracts two types of key terms from a user query: a course name and a professor name. Below are the rules for extraction:
 
         1. **Key Terms**:
-        - **Professor Name**: Includes first and/or last names, and optional titles such as "Dr." or "Prof." (e.g., "Benjamin Lerner," "Dr. Smith").
+        - **Professor Name**: Includes first and/or last names, and excludes optional titles such as "Dr." or "Prof." (e.g., Professor Benjamin Lerner becomes Benjamin Lerner).
         - **Course Name**: Includes course codes (e.g., "CS3500") or descriptive course names (e.g., "Intro to Biology").
 
         2. **Query Scenarios**:
@@ -23,8 +23,8 @@ def extract_query_terms_prompt():
           Response: {{"prof_name": ["Benjamin Lerner"], "course_name": []}}
         - Query: "Is Professor Sarah Lee assigned MATH1100?"
           Response: {{"prof_name": ["Sarah Lee"], "course_name": ["MATH1100"]}}
-        - Query: "Does Dr. Lee offer CS3500?"
-          Response: {{"prof_name": ["Dr. Lee"], "course_name": ["CS3500"]}}
+        - Query: "Does Dr. Susan Lee offer CS3500?"
+          Response: {{"prof_name": ["Susan Lee"], "course_name": ["CS3500"]}}
         - Query: "Who is teaching either BIOL3000 or CHEM2000?"
           Response: {{"prof_name": [], "course_name": ["BIOL3000", "CHEM2000"]}}
         - Query: "What courses are available this semester?"
