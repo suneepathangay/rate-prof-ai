@@ -1,0 +1,9 @@
+/* src/index.css */
+body {
+  background-color: #2f3136; /* Discord-like background color */
+  color: white; /* Text color */
+}
+
+h1 {
+  color: #7289da; /* Discord blue for headings */
+}
