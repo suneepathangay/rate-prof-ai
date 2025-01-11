@@ -54,7 +54,7 @@ class Pipeline:
     def populate_prof_data(self):
         
         prof_names=list(set(self.get_prof_names()))
-        print(len(prof_names))
+        
         
         for i in range(len(prof_names)):
             try:
