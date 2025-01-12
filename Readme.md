@@ -11,6 +11,8 @@ For the function calling I designed it to follow 2 sort of phases. Phase one is 
 
 TODOs:
 
+Work on adding the course planning feature by getting the data from the searchneu data for the course
+
 Add a validation layer for the keywords so that in case a user mispells a professor name or course name,
 it should still recognize that keyword ie. C3500 should be interpreted as CS3500.
 

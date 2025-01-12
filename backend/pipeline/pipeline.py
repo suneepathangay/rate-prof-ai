@@ -66,8 +66,7 @@ class Pipeline:
                     comments_str=" ".join(comments)
                 
                 if comments_str=="":
-                    with open("missing.txt", "a") as file:
-                        file.write(prof_name+"\n")
+                    print(prof_name)
                         
                     
                 prof_data={"prof_name":prof_name,"reviews": comments_str}
