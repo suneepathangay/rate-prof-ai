@@ -41,19 +41,33 @@ class PineconeConnection:
             include_metadata=True
         )
         
-    def insert(self,text):
+    def insert_vector_prof(self,prof_name):
         
-        vector_embedding=self.embed_text(text)
+        vector_embedding=self.embed_text(prof_name)
         
         self.index.upsert(
             vectors=[
                 {
                     "id": uuid.uuid4(), 
                     "values":vector_embedding, 
-                    "metadata": {"text_name": text}
+                    "metadata": {"text_name": prof_name}
                 }
             ]
-        )   
+        )
+        
+    def insert_vector_course_name(self,course_name,course_number):
+        vector_embedding=self.embed_text(course_name)
+        
+        self.index.upsert(
+            vectors=[
+                {
+                    "id": uuid.uuid4(), 
+                    "values":vector_embedding, 
+                    "metadata": {"text_name": course_number}
+                }
+            ]
+        )
+        
         
     
     
